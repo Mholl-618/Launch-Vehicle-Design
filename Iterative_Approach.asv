@@ -38,7 +38,7 @@ clc
 fprintf('Upper fuel mass %.2f \n',mprop_upper(I))
 fprintf('Lower fuel mass %.2f \n',mprop_lower(I))
 
-%% Prop Calcs
+%% Accelerations
 upper_prop = mprop_upper(I);
 lower_prop = mprop_lower(I);
 rho_lox = 1141; %kg per m^3
@@ -59,8 +59,8 @@ m_dot_VR = 1900e3/(375*go); %Same as above, both ar Kg/s
 %% ODE TIMEEEEE
 pos_1 = [0];
 vel_1 = [0];
-tspan = linspace(0,181,500);
-
-[T1,Y1,TE1,YE1,IE] = ode45(@rocket,tspan ,[0 0],odeset('events',@altEvent,'AbsTol',1e-12));
-plot(T1,Y1(:,2))
+cutoff_alt = 1.59e+05;
+events = @(t,y) [y(1)-cutoff_alt,1,1]
+options = odeset
+[T1,Y1,TE1,YE1,IE] = ode45(@rocket,[0,185],[0,0])
 

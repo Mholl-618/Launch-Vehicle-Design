@@ -58,27 +58,18 @@ upper_lox = stoch_ratio*upper_ch4;
 
 m_dot_SLR = 1700e3/(350*go); %thrust  divided by isp and gravity
 m_dot_VR = 1900e3/(375*go); %Same as above, both ar Kg/s
-SA = (1.80339999997968)^2*pi; %1 inch thick walls give us a safety factor of 
-vol_low_ch4 = lower_ch4/rho_lch4; % 4.12 in compressive yield failure, no clue on buckling
+SA = (1.80339999997968)^2*pi;
+vol_low_ch4 = lower_ch4/rho_lch4;
 vol_low_ox = lower_lox/rho_lox;
 vol_up_ch4 = upper_ch4/rho_lch4;
 vol_up_ox = upper_lox/rho_lox;
 hght_lower = (vol_low_ch4+vol_low_ox)/SA*1.1;
 hght_upper = (vol_up_ch4+vol_up_ox)/SA*1.1;
-total_hght = hght_lower+hght_upper; 
-tank_mass = pi*(1.8288^2-1.8034^2)*total_hght*2685; %2685 is the density of 2195 aluminum
+total_hght = hght_lower+hght_upper;
+tank_mass = pi*(1.8288^2-1.8034^2)*total_hght*2685 %2685 is the density of 2195 aluminum
 dome_mass = 4/3*pi*(1.8288^3-1.8034^3)*2685*.5;
 dome_per_stage = dome_mass*3;
-
-%Lower Tanks
-lower_tank_mass = pi*(1.8288^2-1.8034^2)*hght_lower*2685;
-lower_engine_mass = 5*800; %each raptor is roughly 800 kg
-lower_inert_mass = lower_tank_mass+lower_engine_mass+dome_per_stage;
-%Upper Tanks
-upper_tank_mass = pi*(1.8288^2-1.8034^2)*hght_upper*2685; 
-upper_engine_mass = 1200; %vacuum raptor is heavy
-upper_inert_mass = upper_tank_mass+upper_engine_mass+dome_per_stage;
-
+tota
 
 %% ODE TIMEEEEE
 pos_1 = [0];

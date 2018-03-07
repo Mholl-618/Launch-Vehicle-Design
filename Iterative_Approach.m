@@ -22,11 +22,11 @@ for i = 1:length(f_two)
 
     [mprop_upper(i),~,m_final_upper,m_init_upper(i)] = mass_vals(f_two(i)*del_v,375,.1,15000);
     [mprop_lower(i),~,m_final_lower,m_init_lower(i)] = mass_vals(f_one(i)*del_v,350,.1,m_init_upper(i));
-    total_mass(i) = m_init_lower(i)+m_init_upper(i);
+%     total_mass(i) = m_init_lower(i)+m_init_upper(i);
 end
-[M,I] = min(total_mass);
+[M,I] = min(m_init_lower);
 figure
-plot(f_two,total_mass)
+plot(f_two,m_init_lower)
 hold
 plot(f_two(I),M,'r*')
 xlabel('Stage 2 fractional \Delta V')
@@ -83,7 +83,7 @@ upper_inert_mass = upper_tank_mass+upper_engine_mass+dome_per_stage;
 %% ODE TIMEEEEE
 pos_1 = [0];
 vel_1 = [0];
-tspan = 0:.1:310;
+tspan = 0:.1:410;
 
 [T1,Y1,TE1,YE1,IE] = ode45(@rocket_man,tspan ,[0 0],odeset('events',@altEvent,'AbsTol',1e-12));
 

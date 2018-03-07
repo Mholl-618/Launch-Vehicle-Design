@@ -2,7 +2,7 @@ function dx = rocket_man(t,x)
     dx = zeros(2,1);
     %Atmo stuff and basic conditions
     [rho,~,~,a,~] = std_atmosphere(x(1));
-        g = 9.81;
+        g = (6.6742e-11)*(5973600000000000000000000/((6371000+x(1))^2));
         SA = (3.6576/2)^2*pi; %m^2 12 ft OD
         cd = .075;
         V = x(2);
@@ -12,8 +12,8 @@ function dx = rocket_man(t,x)
         
         %Actual Math Part 
         if t<185 %1st Stage
-            mass = (5.826244781795430e+05) - (495.2907320178509*5*t);
-            m_prop_lower = (447604.9970389301 - (495.2907320178509*5*t));
+            mass = (575283) - (495.2907320178509*5*t);
+            m_prop_lower = (427070.9105612746 - (495.2907320178509*5*t));
             if m_prop_lower > 0
                 Thrust = 1700e3*5; %Five raptors in KN
                 Drag = cd*q*SA;
@@ -28,8 +28,8 @@ function dx = rocket_man(t,x)
             else
             end
         else %2nd Stage
-            mass = 85285.59258073178 - (516.6562*(t-185));
-            m_prop_upper = 63257.03332265860 - (516.6562*(t-185));
+            mass = 100760.2 - (516.6562*(t-185));
+            m_prop_upper = 77184 - (516.6562*(t-185));
             if m_prop_upper > 0 
                 Thrust = 1900e3; %Vacuum raptors in KN
                 accel_thrust = Thrust/mass;

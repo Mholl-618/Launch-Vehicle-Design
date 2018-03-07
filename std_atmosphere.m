@@ -32,18 +32,9 @@ if altitude < 86000 %Troposphere
     return
 % do some stuff here for altitude abvoe 86km
 elseif altitude < 91000
-    altitude = altitude/1000; %Equations are for z in km
     t = 186.8673;
     p = exp(2.156582e-06*altitude^3 -4.836957e-04*altitude^2-0.1425192*altitude + 13.47530);
     rho = exp(-3.322622e-06*altitude^3 +9.111460e-04*altitude^2-0.1425192*altitude + 5.944694);
-    mu = mu_0_earth*((t/earth_t0)^1.5)*((earth_t0+earth_ts)/(t+earth_ts));
-elseif altitude < 100001
-    altitude = altitude/1000; %Equations are for z in km
-    delta_z = altitude - 91;
-    little_a = -19942.9;
-    t = 263.1905-76.3232*sqrt(1-((delta_z/little_a)^2));
-    p = exp(3.304895e-05*altitude^3 -0.009062730e-04*altitude^2+0.6516698*altitude - 11.03037);
-    rho = exp(2.873405e-05*altitude^3 - 0.008492037*altitude^2+0.6541179*altitude -23.62010);
     mu = mu_0_earth*((t/earth_t0)^1.5)*((earth_t0+earth_ts)/(t+earth_ts));
 else %just give scaled results pressure is basically 0 and doesn't help with any calcs
     rho_0  = 1.225; %kg.m^3; is the base density

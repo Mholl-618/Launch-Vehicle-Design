@@ -68,7 +68,7 @@ tspan = 0:.1:310;
 
 dY = zeros(length(T1),2);
 for i = 1:length(T1)
-    dY(i,:) = rocket_1st_stage(T1(i),Y1(i,:)); 
+    dY(i,:) = rocket_man(T1(i),Y1(i,:)); 
 end
 
 q = [];

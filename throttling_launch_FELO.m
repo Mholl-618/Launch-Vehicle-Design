@@ -9,18 +9,22 @@ m2_fuel = masses(4);
 g = (6.6742e-11)*(5973600000000000000000000/((6371000+x(2))^2));
 SA = (1.7272)^2*pi; %m^2 12 ft OD
 cd = .075;
-V = sqrt((x(3)^2)+(x(4)^2));
+V = sqrt(((x(3)-422.1)^2)+(x(4)^2));
 q = .5*rho*V^2;
 MACH = V/a;
 %Ascent Path Guidance
+turn_i = 5e3;%initiate turn
+turn_alt = 150e3; %alt of 0 vertical speed
+hyp_val = (hyp_perc/100)*10;
+t_par = x(4)/g;
+d_peak = x(2)+(x(4)*t_par)-(.5*g*t_par^2);
 
-hyp_val = (hyp_perc/100)*20;
 
-if x(2) < .5e3 %before grav turn alt
+if x(2) < turn_i
     fpa = 1; %go straight up
     var_pass = 0;
 else %grav turn profile
-    var_pass = (tanh(hyp_val-(hyp_val*((140.5e3-x(2))/140e3))))*(pi/2); %final alt of 150
+    var_pass = (tanh(hyp_val-(hyp_val*(((turn_alt+turn_i)-d_peak)/turn_alt))))*(pi/2); %final alt of 150
     fpa = cos(var_pass);
 end
 
@@ -67,22 +71,17 @@ if appo < 6828;
         accel_x = thrust_x/m1;
         accel_y = thrust_y/m1;
         
-        if x(2) < 10e3 %basic vertical flight
-            dx(1) = x(3);
-            dx(2) = x(4);
-            dx(3) = accel_x;
-            dx(4) = accel_y-(fpa*g);
-        else
-            r = x(2) + 6378e3; %orbital radius from center of earth
-            v_perp = x(3);
-            a_cent = (v_perp^2)/r; %positive (up)
-            dx(1) = x(3);
-            dx(2) = x(4);
-            dx(3) = accel_x;
-            dx(4) = accel_y+a_cent-(fpa*g);
-        end
+        %1st stage accel calcs
+        r = x(2) + 6378e3; %orbital radius from center of earth
+        v_perp = x(3);
+        a_cent = (v_perp^2)/r; %positive (up)
+        dx(1) = x(3);
+        dx(2) = x(4);
+        dx(3) = accel_x;
+        dx(4) = accel_y+a_cent-g;
         
-    else %2nd Stage
+        
+    elseif m1_fuel <10000%2nd Stage
         if m2_fuel > 3500
             thrust = 1900e3;
             accel_rocket = (thrust - (q*SA*cd))/m2;
@@ -107,32 +106,30 @@ if appo < 6828;
         accel_x = thrust_x/m2;
         accel_y = thrust_y/m2;
         
-        if x(2) < 10e3 %basic vertical flight
-            dx(1) = x(3);
-            dx(2) = x(4);
-            dx(3) = accel_x;
-            dx(4) = accel_y-(fpa*g);
-        elseif m2_fuel > 3500
+        %1st stage accel calcs
+        if m2_fuel > 3500
             r = x(2) + 6378e3; %orbital radius from center of earth
             v_perp = x(3);
             a_cent = (v_perp^2)/r; %positive (up)
             dx(1) = x(3);
             dx(2) = x(4);
             dx(3) = accel_x;
-            dx(4) = accel_y+a_cent-(fpa*g);
+            dx(4) = accel_y+a_cent-g;
         else
             dx(1) = x(3);
             dx(2) = x(4);
             dx(3) = 0;
             dx(4) = 0;
         end
-        
+    else
+        dx(1) = x(3);
+        dx(2) = x(4);
+        dx(3) = 0;
+        dx(4) = 0;
     end
 else
     dx(1) = x(3);
     dx(2) = x(4);
     dx(3) = 0;
     dx(4) = 0;
-end
-
 end

@@ -5,11 +5,11 @@ f_one = .3;
 f_two = ones(1,length(f_one))-f_one;
 
 % Top stage
-%Raptor Vacuum Engine Performance
+% Raptor Vacuum Engine Performance
 go = 9.80665;
 ISP = 375; %assume vacuum performance
 ve = ISP*go;
-m_pay = 13000; %kg, aka 13 metric tons
+m_pay = 13000; % kg, aka 13 metric tons
 m_init_upper = [];
 m_final_upper = [];
 m_init_lower = [];
@@ -30,7 +30,7 @@ for i = 1:length(f_two)
     m1_fi = mprop_lower(i);
 
 for m = 1:length(t)
-    [t(m),dx(m,:),masses(m+1,:)] = throttling_launch(t(m),x(m,:),masses(m,:),del_t,25);
+    [t(m),dx(m,:),masses(m+1,:),~,~] = throttling_launch(t(m),x(m,:),masses(m,:),del_t,25);
     accel_x= dx(m,3);
     accel_y= dx(m,4);
     vel_x = x(m,3)+(accel_x*del_t);
@@ -59,11 +59,14 @@ clc
 fprintf('Upper fuel mass %.2f \n',mprop_upper(I))
 fprintf('Lower fuel mass %.2f \n',mprop_lower(I))
 
-hyp_perc = 15:1:40;
+hyp_perc = 15:1:45;
+
 for i = 1:length(hyp_perc)
     
+    
+    %first burn
     for m = 1:length(t)
-        [t(m),dx(m,:),masses(m+1,:),fuel_loss(m),q_act(m),fpa] = throttling_launch(t(m),x(m,:),masses(m,:),del_t,25);
+        [t(m),dx(m,:),masses(m+1,:),~,h_mag(m)] = throttling_launch(t(m),x(m,:),masses(m,:),del_t,hyp_perc(i));
         accel_x= dx(m,3);
         accel_y= dx(m,4);
         vel_x = x(m,3)+(accel_x*del_t);
@@ -72,13 +75,21 @@ for i = 1:length(hyp_perc)
         pos_y = x(m,2)+(vel_y*del_t);
         x(m+1,:) = [pos_x pos_y vel_x vel_y];
     end
-    two_stage_fuel(i)= masses(i,4);
+    h_mag_plot = h_mag(end); 
+    upper_coast_fuel(i) = masses(end,4);
+    
+    %2nd burn
+    v = [0
+    
+    
+    
+    
     
 end
 
-plot(hyp_perc,two_stage_fuel)
 
-%%
+
+%% asdf
 figure 
 plot(f_two,max_vels)
 hold

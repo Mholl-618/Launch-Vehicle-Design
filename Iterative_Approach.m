@@ -130,7 +130,7 @@ masses(1,4) = upper_coast_fuel;
 masses(1,3) = upper_coast;
 accel = zeros(1,4);
 
-t = 0:del_t:200;
+t = 0:del_t:60;
     for m = 1:length(t)
         [t(m),dx(m,:),masses(m+1,:),~,h_mag_end(m)] = throttling_SECB(t(m),x(m,:),masses(m,:),del_t,45);
         accel_x= dx(m,3);

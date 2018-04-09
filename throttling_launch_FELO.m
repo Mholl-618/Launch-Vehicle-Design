@@ -5,7 +5,7 @@ m1_fuel = masses(2);
 m2 = masses(3);
 m2_fuel = masses(4);
 
-[rho,~,~,a,~] = std_atmosphere(x(2));
+[rho,~,a,~] = std_atmosphere(x(2));
 g = (6.6742e-11)*(5973600000000000000000000/((6371000+x(2))^2));
 SA = (1.7272)^2*pi; %m^2 12 ft OD
 cd = .075;

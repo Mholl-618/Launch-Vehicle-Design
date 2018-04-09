@@ -154,7 +154,7 @@ t = 0:del_t:30;
 
 
 
-t = 0:del_t:360;
+t = 0:del_t:280;
 % figure
 % [hAx,hLine1,hLine2] = plotyy(t,dx(:,2)./go,t,dx(:,1)./go);
 % title('Acceleration and Velocity VS. T+');

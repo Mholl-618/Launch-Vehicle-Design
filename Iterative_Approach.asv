@@ -18,7 +18,7 @@ mprop_upper = [];
 mprop_lower = [];
 del_t = .05;
 t = 0:del_t:250;
-x = zeros(length(t)+1,4);
+x = zeros(length(t),4);
 x(1,:) = [0 0 0 0];
 
 

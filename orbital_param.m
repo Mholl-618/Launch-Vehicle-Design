@@ -23,18 +23,18 @@ end
 n_dot_e = norm_vector*e';
 omega_calc = acosd((norm_vector*(e'))/(norm_mag*e_mag));
 if e(3) < 0
-    omega_final = 360 - omega_calc
+    omega_final = 360 - omega_calc;
 else 
-    omega_final = omega_calc
+    omega_final = omega_calc;
 end
 
 e_dot_r = e*r';
 calc_true_anomaly = acosd(e_dot_r/(e_mag*r_mag));
 v_dot_r = v*r';
 if v_dot_r > 0 
-    true_anomaly = calc_true_anomaly
+    true_anomaly = calc_true_anomaly;
 else
-    true_anomaly = 360 - calc_true_anomaly
+    true_anomaly = 360 - calc_true_anomaly;
 end
 
 end

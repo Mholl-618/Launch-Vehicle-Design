@@ -3,8 +3,8 @@
     %for cross checking hand calcs 
 clear all, clc
 
-r = [1445.7 7027.5 0]
-v = [8.593 2.172 0]
+r = [37.863 28.224+6378 0]
+v = [2.9740 1.3723 0]
 
 [semi_major,h, h_mag, r_mag, v_mag,e, e_mag, dot_vr,i,norm_vector,norm_mag,...
     ascending_node_longitude,n_dot_e,omega_calc,omega_final,e_dot_r,...

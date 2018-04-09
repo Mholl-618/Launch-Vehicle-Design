@@ -1,4 +1,4 @@
-function [t,dx,masses] = throttling_launch(t,x,masses,del_t,hyp_perc)
+function [t,dx,masses,fuel_loss,q,fpa] = throttling_launch(t,x,masses,del_t,hyp_perc)
 
 m1 = masses(1);
 m1_fuel = masses(2);

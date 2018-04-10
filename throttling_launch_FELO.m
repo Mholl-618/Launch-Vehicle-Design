@@ -7,24 +7,25 @@ m2_fuel = masses(4);
 
 [rho,~,a,~] = std_atmosphere(x(2));
 g = (6.6742e-11)*(5973600000000000000000000/((6371000+x(2))^2));
-SA = (1.7272)^2*pi; %m^2 12 ft OD
+SA = (1.8288)^2*pi; %m^2 12 ft OD
 cd = .075;
 V = sqrt(((x(3)-422.1)^2)+(x(4)^2));
 q = .5*rho*V^2;
 MACH = V/a;
 %Ascent Path Guidance
-turn_i = 5e3;%initiate turn
-turn_alt = 150e3; %alt of 0 vertical speed
+turn_i = 8.5e3;%initiate turn
+turn_alt = 112e3; %alt of 0 vertical speed
 hyp_val = (hyp_perc/100)*10;
 t_par = x(4)/g;
 d_peak = x(2)+(x(4)*t_par)-(.5*g*t_par^2);
+turn_ang_final = (pi/2)-deg2rad(0);
 
 
 if x(2) < turn_i
     fpa = 1; %go straight up
     var_pass = 0;
 else %grav turn profile
-    var_pass = (tanh(hyp_val-(hyp_val*(((turn_alt+turn_i)-d_peak)/turn_alt))))*(pi/2); %final alt of 150
+    var_pass = (tanh(hyp_val-(hyp_val*(((turn_alt+turn_i)-d_peak)/turn_alt))))*turn_ang_final; %final alt 
     fpa = cos(var_pass);
 end
 

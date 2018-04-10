@@ -75,7 +75,9 @@ upper_lox = stoch_ratio*upper_ch4;
 
 m_dot_SLR = 1700e3/(350*go); %thrust  divided by isp and gravity
 m_dot_VR = 1900e3/(375*go); %Same as above, both ar Kg/s
-SA = (1.7018)^2*pi; %1 inch thick walls give us a safety factor of 
+SA = (1.8288)^2*pi; %1 inch thick walls give us a safety factor of 
+
+
 vol_low_ch4 = lower_ch4/rho_lch4; % 4.12 in compressive yield failure, no clue on buckling
 vol_low_ox = lower_lox/rho_lox;
 vol_up_ch4 = upper_ch4/rho_lch4;
@@ -83,7 +85,7 @@ vol_up_ox = upper_lox/rho_lox;
 hght_lower = (vol_low_ch4+vol_low_ox)/SA*1.1;
 hght_upper = (vol_up_ch4+vol_up_ox)/SA*1.1;
 total_hght = hght_lower+hght_upper; 
-tank_mass = pi*(1.7272^2-1.7018^2)*total_hght*2685; %2685 is the density of 2195 aluminum
+tank_mass = pi*(1.8288^2-1.8034^2)*total_hght*2685; %2685 is the density of 2195 aluminum
 dome_mass = 4/3*pi*(1.8288^3-1.8034^3)*2685*.5;
 dome_per_stage = dome_mass*3;
 
@@ -99,12 +101,12 @@ upper_inert_mass = upper_tank_mass+upper_engine_mass+dome_per_stage;
 
 %% ODE TIMEEEEE
 del_t = .01;
-t = 0:del_t:280;
+t = 0:del_t:300;
  %first burn
     x = [0 0 422.1 0];
 %     masses = [m_init_lower(I) mprop_lower(I) m_init_upper(I) mprop_upper(I)];
     for m = 1:length(t)
-        [t(m),dx(m,:),masses(m+1,:),q_act(m),h_mag(m),~] = throttling_launch_FELO(t(m),x(m,:),masses(m,:),del_t,35);
+        [t(m),dx(m,:),masses(m+1,:),q_act(m),h_mag(m),~] = throttling_launch_FELO(t(m),x(m,:),masses(m,:),del_t,25);
         accel_x= dx(m,3);
         accel_y= dx(m,4);
         vel_x = x(m,3)+(accel_x*del_t);
@@ -124,6 +126,7 @@ t = 0:del_t:280;
     title('1st burn')    
     figure
     plot(x(:,1),x(:,2))
+    
     %2nd burn
     vPerp = h_mag_pass/6.828;
     x = [0 6828e3 vPerp 0];
@@ -134,9 +137,9 @@ masses(1,4) = upper_coast_fuel;
 masses(1,3) = upper_coast;
 accel = zeros(1,4);
 
-t = 0:del_t:30;
+t = 0:del_t:60;
     for m = 1:length(t)
-        [t(m),dx(m,:),masses(m+1,:),~,h_mag_end(m)] = throttling_SECB(t(m),x(m,:),masses(m,:),del_t,45);
+        [t(m),dx(m,:),masses(m+1,:),h_mag_end(m),~] = throttling_SECB(t(m),x(m,:),masses(m,:),del_t,60);
         accel_x= dx(m,3);
         accel_y= dx(m,4);
         vel_x = x(m,3)+(accel_x*del_t);
@@ -154,7 +157,7 @@ t = 0:del_t:30;
 
 
 
-t = 0:del_t:280;
+t = 0:del_t:300;
 % figure
 % [hAx,hLine1,hLine2] = plotyy(t,dx(:,2)./go,t,dx(:,1)./go);
 % title('Acceleration and Velocity VS. T+');

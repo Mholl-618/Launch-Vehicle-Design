@@ -105,93 +105,71 @@ t = 0:del_t:300;
  %first burn
     x = [0 0 422.1 0];
 %     masses = [m_init_lower(I) mprop_lower(I) m_init_upper(I) mprop_upper(I)];
-for m = 1:length(t)
-    [t(m),dx(m,:),masses(m+1,:),q_act(m),h_mag(m),~] = throttling_launch_FELO(t(m),x(m,:),masses(m,:),del_t,25);
-    if m==1
-        adot_x(m) = 0;
-        adot_y(m) = 0;
-        addot_x(m) = 0;
-        addot_y(m) = 0;
-    elseif m==2
-        adot_x(m) = (dx(m,3)-dx((m-1),3))/del_t;
-        adot_y(m) = (dx(m,4)-dx((m-1),4))/del_t;
-        addot_x(m) = 0;
-        addot_y(m) = 0;
-    elseif m>2
-        adot_x(m) = (dx(m,3)-dx((m-1),3))/del_t;
-        adot_y(m) = (dx(m,4)-dx((m-1),4))/del_t;
-        addot_x(m) = (adot_x(m)-adot_x(m-1))/del_t;
-        addot_y(m) = (adot_y(m)-adot_y(m-1))/del_t;
+    for m = 1:length(t)
+        [t(m),dx(m,:),masses(m+1,:),q_act(m),h_mag(m),~] = throttling_launch_FELO(t(m),x(m,:),masses(m,:),del_t,25);
+        accel_x= dx(m,3);
+        accel_y= dx(m,4);
+        vel_x = x(m,3)+(accel_x*del_t);
+        vel_y = x(m,4)+(accel_y*del_t);
+        pos_x = x(m,1)+(vel_x*del_t);
+        pos_y = x(m,2)+(vel_y*del_t);
+        x(m+1,:) = [pos_x pos_y vel_x vel_y];
+        accel(m) = sqrt(accel_x^2+accel_y^2);
     end
+    h_mag_pass = h_mag(end);
+    upper_coast_fuel = masses(end,4);
+    upper_coast = masses(end,3);
+    m = 1;
+
+    figure
+    plot(t,accel)
+    title('1st burn')    
+    figure
+    plot(x(:,1),x(:,2))
     
-    accel_x= dx(m,3);
-    accel_y= dx(m,4);
-    vel_x = x(m,3)+(accel_x*del_t)+(.5*adot_x(m)*(del_t^2))+((1/6)*addot_x(m)*(del_t^3));
-    vel_y = x(m,4)+(accel_y*del_t)+(.5*adot_y(m)*(del_t^2))+((1/6)*addot_y(m)*(del_t^3));
-    pos_x = x(m,1)+(vel_x*del_t)+(.5*accel_x*(del_t^2))+((1/6)*adot_x(m)*(del_t^3))+((1/24)*addot_x(m)*(del_t^4));
-    pos_y = x(m,2)+(vel_y*del_t)+(.5*accel_y*(del_t^2))+((1/6)*adot_y(m)*(del_t^3))+((1/24)*addot_y(m)*(del_t^4));
-    x(m+1,:) = [pos_x pos_y vel_x vel_y];
-    accel(m) = sqrt(accel_x^2+accel_y^2);
-end
-h_mag_pass = h_mag(end);
-upper_coast_fuel = masses(end,4);
-upper_coast = masses(end,3);
-m = 1;
+    %2nd burn
+    vPerp = h_mag_pass/6.828;
+    x = [0 6828e3 vPerp 0];
 
-figure
-plot(t,accel/go)
-title('1st burn')
-xlabel('T+ (seconds)')
-ylabel('Acceleration (G)')
-figure
-plot(x(:,1),x(:,2))
-title('Ascent Path')
-xlabel('X (meters)')
-ylabel('Y (meters)')
-
-%2nd burn
-vPerp = h_mag_pass/6.828;
-x = [0 6828e3 vPerp 0];
-
-
-
+    
+    
 masses(1,4) = upper_coast_fuel;
 masses(1,3) = upper_coast;
 accel = zeros(1,4);
 
 t = 0:del_t:60;
-for m = 1:length(t)
-    [t(m),dx(m,:),masses(m+1,:),h_mag_end(m),~] = throttling_SECB(t(m),x(m,:),masses(m,:),del_t,60);
-    if m==1
-        adot_x(m) = 0;
-        adot_y(m) = 0;
-        addot_x(m) = 0;
-        addot_y(m) = 0;
-    elseif m==2
-        adot_x(m) = (dx(m,3)-dx((m-1),3))/del_t;
-        adot_y(m) = (dx(m,4)-dx((m-1),4))/del_t;
-        addot_x(m) = 0;
-        addot_y(m) = 0;
-    elseif m>2
-        adot_x(m) = (dx(m,3)-dx((m-1),3))/del_t;
-        adot_y(m) = (dx(m,4)-dx((m-1),4))/del_t;
-        addot_x(m) = (adot_x(m)-adot_x(m-1))/del_t;
-        addot_y(m) = (adot_y(m)-adot_y(m-1))/del_t;
+    for m = 1:length(t)
+        [t(m),dx(m,:),masses(m+1,:),h_mag_end(m),~] = throttling_SECB(t(m),x(m,:),masses(m,:),del_t,60);
+        if m=1
+            adot_x(m) = 0;
+            adot_y(m) = 0;
+            addot_x(m) = 0;
+            addot_y(m) = 0;
+        elseif m=2
+            adot_x(m) = (dx(m,3)-dx((m-1),3))/del_t;
+            adot_y(m) = (dx(m,4)-dx((m-1),4))/del_t;
+            addot_x(m) = 0;
+            addot_y(m) = 0;
+        elseif m>2
+            adot_x(m) = (dx(m,3)-dx((m-1),3))/del_t;
+            adot_y(m) = (dx(m,4)-dx((m-1),4))/del_t;
+            addot_x(m) = (adot_x(m)-adot_x(m-1))/del_t;
+            addot_y(m) = (adot_y(m)-adot_y(m-1))/del_t;
+        end
+            
+        accel_x= dx(m,3);
+        accel_y= dx(m,4);
+        vel_x = x(m,3)+(accel_x*del_t)+(.5*adot_x(m)*(del_t^2))+((1/6)*addot_x(m)*(del_t^3));
+        vel_y = x(m,4)+(accel_y*del_t)+(.5*adot_y(m)*(del_t^2))+((1/6)*addot_y(m)*(del_t^3));
+        pos_x = x(m,1)+(vel_x*del_t)+(.5*accel_x*(del_t^2))+((1/6)*adot_x(m)*(del_t^3))+((1/24)*addot_x(m)*(del_t^4));
+        pos_y = x(m,2)+(vel_y*del_t);
+        x(m+1,:) = [pos_x pos_y vel_x vel_y];
+        accel(m) = sqrt(accel_x^2+accel_y^2);
     end
-    
-    accel_x= dx(m,3);
-    accel_y= dx(m,4);
-    vel_x = x(m,3)+(accel_x*del_t)+(.5*adot_x(m)*(del_t^2))+((1/6)*addot_x(m)*(del_t^3));
-    vel_y = x(m,4)+(accel_y*del_t)+(.5*adot_y(m)*(del_t^2))+((1/6)*addot_y(m)*(del_t^3));
-    pos_x = x(m,1)+(vel_x*del_t)+(.5*accel_x*(del_t^2))+((1/6)*adot_x(m)*(del_t^3))+((1/24)*addot_x(m)*(del_t^4));
-    pos_y = x(m,2)+(vel_y*del_t)+(.5*accel_y*(del_t^2))+((1/6)*adot_y(m)*(del_t^3))+((1/24)*addot_y(m)*(del_t^4));
-    x(m+1,:) = [pos_x pos_y vel_x vel_y];
-    accel(m) = sqrt(accel_x^2+accel_y^2);
-end
-h_mag_plot = h_mag_end(end);
-figure
-plot(t,accel)
-title('2nd burn')
+    h_mag_plot = h_mag_end(end);
+    figure
+    plot(t,accel)
+    title('2nd burn')
 
 
 

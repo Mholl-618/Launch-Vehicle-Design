@@ -105,6 +105,7 @@ t = 0:del_t:300;
  %first burn
     x = [0 0 422.1 0];
 %     masses = [m_init_lower(I) mprop_lower(I) m_init_upper(I) mprop_upper(I)];
+masses = [m_init_lower,lower_prop,m_init_upper,upper_prop];
 for m = 1:length(t)
     [t(m),dx(m,:),masses(m+1,:),q_act(m),h_mag(m),~] = throttling_launch_FELO(t(m),x(m,:),masses(m,:),del_t,25);
     if m==1
@@ -197,13 +198,6 @@ title('2nd burn')
 
 
 t = 0:del_t:300;
-% figure
-% [hAx,hLine1,hLine2] = plotyy(t,dx(:,2)./go,t,dx(:,1)./go);
-% title('Acceleration and Velocity VS. T+');
-% ylabel(hAx(1),'Acceleration (g)') % left y-axis 
-% ylabel(hAx(2),'Velocity (m/s)') % right y-axis
-% xlabel('T+ (seconds)')
-% % ylim([0 7]);
 figure
 plot(t,q_act)
 title('Dynamic Pressure vs T+')

@@ -42,18 +42,22 @@ else
     h_mag = 1;
 end
 
-
+if x(2) < 80e3
+    thrust_co = (((200e3)*(x(2)/80e3))+1700e3)/1700e3;
+else
+    thrust_co = (1900/1700);
+end
 
 %Actual Math Part
 if appo < 6828;
     if m1_fuel > 10000 %1st Stage
         if q < 28e3 ;
-            thrust = 1700e3*4;
+            thrust = 1700e3*4*thrust_co;
             accel_rocket = (thrust-(q*SA*cd))/m1;
             if accel_rocket+(fpa*g) > 39.24
                 accel_rocket = 4*9.81-(fpa*g);
                 thrust = (m1*accel_rocket)+(fpa*g);
-                fuel_loss = (thrust/(1700e3*4))*(495.3*4)*del_t;
+                fuel_loss = (thrust/(1700e3*4*thrust_co))*(495.3*4)*del_t;
             else
                 fuel_loss = 495.3*4*del_t;
             end
@@ -61,7 +65,7 @@ if appo < 6828;
         else
             thrust = (q*SA*cd)+(g*m1*fpa);
             accel_rocket = 0;
-            fuel_loss = (thrust/(1700e3*4))*(495.3*4)*del_t;
+            fuel_loss = (thrust/(1700e3*4*thrust_co))*(495.3*4)*del_t;
         end
         m1 = m1 - fuel_loss;
         m1_fuel = m1_fuel - fuel_loss;
